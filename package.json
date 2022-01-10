@@ -1,16 +1,23 @@
 {
   "name": "react-nested-annotator",
-  "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.7",
+  "description": "A React Component for annotating nested text from html, usually used in NLP data processing task",
+  "private": false,
+  "keywords": ["react", "nested", "annotator"],
+  "author": "lulingbo",
+  "license": "MIT",
+  "main": "dist/component/index.js",
+  "types": "dist/component/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bollues/react-nested-annotator"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config ./webpack.dev.js",
-    "build": "webpack --config ./webpack.prod.js"
+    "build": "webpack --config ./webpack.prod.js",
+    "tsc": "tsc"
   },
-  "keywords": [],
-  "author": "lulingbo",
-  "license": "MIT",
   "dependencies": {
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",

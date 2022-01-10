@@ -16,6 +16,7 @@ export type TextBaseProps<T> = {
   value: T[]
   onChange: (value: T[]) => any
   getSpan?: (span: TextSpan) => T
+  tags: {}
   // TODO: determine whether to overwrite or leave intersecting ranges.
 }
 
