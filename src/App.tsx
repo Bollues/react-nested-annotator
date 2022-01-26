@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TextAnnotator } from './component';
 
 const TEXT: string = '0123456789'
+// const TEXT: string = '正在调试BUG...'
 const argumentsTemplate: any = {
   value: []
 }
@@ -22,6 +23,7 @@ const App = () => {
           width: '100%',
           fontSize: '2rem'
         }}
+        // useEdge={true}
         content={TEXT}
         tags={tags}
         value={argument.value}
@@ -29,14 +31,6 @@ const App = () => {
           setArguments({ value });
           return
         }}
-        // getSpan={function (span) {
-        //   return {
-        //     ...span,
-        //     mark: true,
-        //     tag,
-        //     color: (tags as any)[tag]
-        //   }
-        // }}
       />
     </div>
 

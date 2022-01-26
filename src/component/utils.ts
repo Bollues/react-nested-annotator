@@ -4,7 +4,7 @@ export const selectionIsEmpty = (selection: any) => {
 }
 
 // *************************sortByStart version*************************
-export const splitWithOffsets = (text: string, offsets: { start: number; end: number; mark?: boolean, content?: string; children?: any }[]) => {
+export const splitWithOffsets = (text: string, offsets: { start: number; end: number; mark?: boolean, content?: string; children?: any }[], useEdge: boolean = false) => {
   const splits: any = []
   let lastEnd: number = 0
   let lastStart: number = -1
@@ -26,36 +26,11 @@ export const splitWithOffsets = (text: string, offsets: { start: number; end: nu
   // 生成嵌套结构的split
   unNestededSplits.forEach((split: any, idx: number) => {
     if (!split.mark || split.mark === false) {      // 非标签直接进
-      
-      
-      // if (idx < unNestededSplits.length - 1 && unNestededSplits[idx + 1].mark && unNestededSplits[idx + 1].start < split.end && unNestededSplits[idx + 1].end <= split.end){
-      //   splits.push({
-      //     id: idx - 1,
-      //     start: split.start,
-      //     end: unNestededSplits[idx + 1].start,
-      //     content: text.slice(split.start, unNestededSplits[idx + 1].start)
-      //   })
-      //   splits.push({
-      //     id: idx,
-      //     start: unNestededSplits[idx + 1].end,
-      //     end: split.end,
-      //     content: text.slice(unNestededSplits[idx + 1].end, split.end)
-      //   })
-      // } else {
-      //   splits.push({
-      //     id: idx,
-      //     ...split
-      //   })
-      // }
-
-
-
       splits.push({
         id: idx,
         ...split
       })
-    }
-    else {
+    } else {
       const { start, end } = split
 
       if (start >= lastEnd) {       // 非嵌套
@@ -87,6 +62,7 @@ export const splitWithOffsets = (text: string, offsets: { start: number; end: nu
           if (!shortestItemAddr.children) shortestItemAddr.children = []
           shortestItemAddr.children.push({         // 处理单个标签
             id: shortestItemAddr.children.length,
+            useEdge: useEdge,
             ...split,
             content: text.slice(start, end)
           })
@@ -128,7 +104,7 @@ export const makeSplits: any = (
   unNestededSplits: { start: number; end: number; mark?: boolean; content?: string; children?: any }[],
   span: { start: number; end: number; mark?: boolean; content?: string; children?: any }
 ) => {
-  
+
   // 首次渲染（无标签）
   if (unNestededSplits.length === 0) {
     unNestededSplits.push({
@@ -170,6 +146,7 @@ export const makeSplits: any = (
   }
 
   unNestededSplits.push(span)
+  // console.log('unNestededSplits', unNestededSplits);
 
   return unNestededSplits
 }
@@ -185,7 +162,7 @@ export const splitText: any = (text: string, splits: { id: string; start: number
   const res: any = []
   let lastStart = 0, lastEnd = 0
   splits.forEach((item) => {
-    
+
     if (res.length === 0 || item.start === lastEnd) {
       res.push(item)
     } else {
@@ -226,7 +203,7 @@ export const mergeSplits: any = (text: string, splits: { id: string; start: numb
   splits.forEach((item) => {
     if (item.start === item.end) return     // 去掉''
     if (item.mark) {    // 是标签直接进（标签不需要合并）
-    // if (item.mark || res.length === 0) {    // 是标签直接进（标签不需要合并）
+      // if (item.mark || res.length === 0) {    // 是标签直接进（标签不需要合并）
       res.push(item)
       return
     }
@@ -237,7 +214,7 @@ export const mergeSplits: any = (text: string, splits: { id: string; start: numb
      *    - 这个标签不是最外层标签
      *        - 直接删
      */
-    
+
     if (item.tag && item.mark === false) {
       for (let split of splits) {
         if (split.mark && split.start <= item.start && split.end >= item.end) {

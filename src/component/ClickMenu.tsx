@@ -1,5 +1,4 @@
 import { forwardRef } from 'react';
-import './clickMenu.css'
 
 type ClickMenuProps = {
   custom: string[],

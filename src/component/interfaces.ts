@@ -13,6 +13,7 @@ export interface TextSpan extends Span {
 
 export type TextBaseProps<T> = {
   content: string
+  useEdge?: boolean
   value: T[]
   onChange: (value: T[]) => any
   getSpan?: (span: TextSpan) => T
@@ -25,10 +26,12 @@ export type TextAnnotatorProps<T> = React.HTMLAttributes<HTMLDivElement> & TextB
 export interface MarkProps {
   key: string
   content: string
+  useEdge?: boolean
   start: number
   end: number
   tag: string
   color?: string
+  whichEdgeIsActive?: string
   onContextMenu: (any: any) => any
 }
 
