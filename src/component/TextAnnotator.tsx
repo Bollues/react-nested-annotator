@@ -6,7 +6,7 @@ import { selectionIsEmpty, splitWithOffsets, makeSplits, mergeSplits, calcOffset
 import { nanoid } from 'nanoid';
 import './index.css';
 
-let start = 0, end = 0    // 标注的起始和终止位置
+let start: number = 0, end: number = 0    // 标注的起始和终止位置
 
 const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   const { content, value, style, tags } = props
@@ -14,24 +14,25 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   const [isEdgeStart, setIsEdgeStart] = useState(true)
   const [clickMenuActive, setClickMenuActive] = useState(false)   // 显示/隐藏 菜单
   const [tag, setTag] = useState('')    // 选择的tag
-  const [whichEdgeIsActive, setWhichEdgeIsActive] = useState('')
+  const [whichEdgeIsActive, setWhichEdgeIsActive] = useState(-1)
   const measuredRef = useRef<HTMLDivElement>(null);   // 菜单ref，用来设置top & left & height
 
   const useEdge = props.useEdge ? true : false
+  const tagStyle = props.tagStyle ? props.tagStyle : null
 
   useEffect(() => {
     if (tag.length > 0) {
       renderTag(start, end)
       setTag('')
-      setWhichEdgeIsActive('')
+      setWhichEdgeIsActive(-1)
     }
   }, [tag])
 
-  const generateContentWithEdge: any = (content: string, start: string) => {
+  const generateContentWithEdge: any = (content: string, start: number) => {
     return content.split('').map((letter: string, i: number) => {
-      const index: string = Number(start) + i + ''
+      const index: number = start + i
       return (
-        <div className={whichEdgeIsActive === index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
+        <div className={whichEdgeIsActive == index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
           <span className="edge-border" data-index={index} />
           <span className="edge-text" data-index={index} >{letter}</span>
         </div>
@@ -40,19 +41,17 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   }
 
   const Spilt = (props: any) => {
-    // console.log('props', props);
     const { mark, content, start, end, id } = props
     let contentSplits = null
     if (useEdge) contentSplits = generateContentWithEdge(content, start, id)
 
-    if (mark) return <Mark useEdge={useEdge} {...props} />
+    if (mark) return <Mark useEdge={useEdge} tagStyle={tagStyle} {...props} />
 
     return (
       useEdge ?
         (
-          <div style={{ display: 'inline-block' }}>
+          <div style={{ display: 'inline' }}>
             {
-              // contentSplits
               contentSplits.map((item: any) => item)
             }
           </div>
@@ -134,11 +133,11 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   const handleEdge = (e: any) => {
     window.getSelection()?.empty()
     if (e.target.className === 'edge-text' || e.target.className === 'edge-border') {
-      const index: number = e.target.getAttribute('data-index')
+      const index: number = Number(e.target.getAttribute('data-index'))
       if (isEdgeStart) {          // 设置edge起点
         setIsEdgeStart(false)
         start = index
-        setWhichEdgeIsActive(index.toString())
+        setWhichEdgeIsActive(index)
         return
       } else {      // 设置edge终点
         end = index
@@ -188,10 +187,10 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     }
   }
 
-  const splits = splitWithOffsets(content, value, useEdge)
+  const splits = splitWithOffsets(content, value, useEdge, tagStyle)
 
   return (
-    // 利用事件委托将所有子元素上的右键事件绑定到它们的父元素上，优化内存
+    // 利用事件委托将所有子元素上的右键事件绑定到react-nested-annotator上，优化内存
     <div
       className='react-nested-annotator'
       style={style}
@@ -202,14 +201,13 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
         splits.map((item: any, idx: number) => (
           <Spilt
             key={idx}
-            whichEdgeIsActive={whichEdgeIsActive}
             {...item}
           />
         ))
       }
       {
-        useEdge && (<div className='edge' key={content.length} data-index={content.length + ''}>
-          <span className="edge-border" data-index={content.length + ''} />
+        useEdge && (<div className='edge' key={content.length} data-index={content.length}>
+          <span className="edge-border" data-index={content.length} />
         </div>)
       }
     </div>

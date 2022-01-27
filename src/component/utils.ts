@@ -4,7 +4,7 @@ export const selectionIsEmpty = (selection: any) => {
 }
 
 // *************************sortByStart version*************************
-export const splitWithOffsets = (text: string, offsets: { start: number; end: number; mark?: boolean, content?: string; children?: any }[], useEdge: boolean = false) => {
+export const splitWithOffsets = (text: string, offsets: { start: number; end: number; mark?: boolean, content?: string; children?: any }[], useEdge: boolean = false, tagStyle: any = null) => {
   const splits: any = []
   let lastEnd: number = 0
   let lastStart: number = -1
@@ -64,7 +64,8 @@ export const splitWithOffsets = (text: string, offsets: { start: number; end: nu
             id: shortestItemAddr.children.length,
             useEdge: useEdge,
             ...split,
-            content: text.slice(start, end)
+            content: text.slice(start, end),
+            tagStyle: tagStyle
           })
         }
       }

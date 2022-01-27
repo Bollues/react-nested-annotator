@@ -13,12 +13,11 @@ export interface TextSpan extends Span {
 
 export type TextBaseProps<T> = {
   content: string
-  useEdge?: boolean
   value: T[]
-  onChange: (value: T[]) => any
-  getSpan?: (span: TextSpan) => T
   tags: {}
-  // TODO: determine whether to overwrite or leave intersecting ranges.
+  onChange: (value: T[]) => any
+  useEdge?: boolean
+  tagStyle?: any
 }
 
 export type TextAnnotatorProps<T> = React.HTMLAttributes<HTMLDivElement> & TextBaseProps<T>
@@ -26,12 +25,13 @@ export type TextAnnotatorProps<T> = React.HTMLAttributes<HTMLDivElement> & TextB
 export interface MarkProps {
   key: string
   content: string
-  useEdge?: boolean
   start: number
   end: number
   tag: string
+  useEdge?: boolean
   color?: string
   whichEdgeIsActive?: string
+  tagStyle?: any
   onContextMenu: (any: any) => any
 }
 
