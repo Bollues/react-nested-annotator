@@ -31,6 +31,7 @@ export interface MarkProps {
   useEdge?: boolean
   color?: string
   whichEdgeIsActive?: number
+  whichEdgeIsHover?: number
   tagStyle?: any
   onContextMenu: (any: any) => any
 }

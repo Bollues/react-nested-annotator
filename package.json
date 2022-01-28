@@ -1,6 +1,6 @@
 {
   "name": "react-nested-annotator",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "A React Component for annotating nested text from html, usually used in NLP data processing task",
   "private": false,
   "keywords": ["react", "nested", "annotator"],

@@ -16,7 +16,7 @@ const renderTag = (tag: any, tagStyle: any) => {
   )
 }
 
-const generateMarkArray = ({id, children, start, content, whichEdgeIsActive}: NestedMarkProps) => {
+const generateMarkArray = ({id, children, start, content, whichEdgeIsActive, whichEdgeIsHover}: NestedMarkProps) => {
   let res: any = []
   let tmpStart: number = 0
   let tmpEnd: number = 0
@@ -30,6 +30,7 @@ const generateMarkArray = ({id, children, start, content, whichEdgeIsActive}: Ne
         })
       }
       item['whichEdgeIsActive'] = whichEdgeIsActive
+      item['whichEdgeIsHover'] = whichEdgeIsHover
       res.push(item)
       tmpStart = item.end - start
       tmpEnd = item.end
@@ -53,14 +54,14 @@ const generateMarkArray = ({id, children, start, content, whichEdgeIsActive}: Ne
   return res
 }
 
-const generateContentWithEdge: any = ({content, id, start}: any, whichEdgeIsActive: number) => {
+const generateContentWithEdge: any = ({content, id, start}: any, whichEdgeIsActive: number, whichEdgeIsHover: number) => {
   return (
     <div key={nanoid()} style={{ display: 'inline-block' }}>
       {
         content.split('').map((letter: string, i: number) => {
           const index: number = start + i
           return (
-            <div className={whichEdgeIsActive === index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
+            <div className={whichEdgeIsActive === index ? 'edge active' : (whichEdgeIsHover === index ? 'edge hover' : 'edge')} key={nanoid()} data-index={index}>
               <span className="edge-border" data-index={index} data-id={id} />
               <span className="edge-text" data-index={index} data-id={id} >{letter}</span>
             </div>
@@ -97,7 +98,7 @@ const Mark = (props: NestedMarkProps) => {
     >
       {
         useEdge ?
-          markArr.map((item: any) => item.mark ? Mark(item) : generateContentWithEdge(item, props.whichEdgeIsActive)) :
+          markArr.map((item: any) => item.mark ? Mark(item) : generateContentWithEdge(item, props.whichEdgeIsActive, props.whichEdgeIsHover)) :
           markArr.map((item: any) => item.mark ? Mark(item) : item.content)
       }
       {renderTag(tag, tagStyle)}

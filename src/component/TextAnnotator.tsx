@@ -15,6 +15,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   const [clickMenuActive, setClickMenuActive] = useState(false)       // 显示/隐藏 菜单
   const [tag, setTag] = useState('')                                  // 选择的tag
   const [whichEdgeIsActive, setWhichEdgeIsActive] = useState(-1)      // 设置edge常亮
+  const [whichEdgeIsHover, setWhichEdgeIsHover] = useState(-1)        // 设置edge hover高亮
   const measuredRef = useRef<HTMLDivElement>(null);                   // 菜单ref，用来设置top & left & height
 
   const useEdge = props.useEdge ? true : false
@@ -25,6 +26,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
       renderTag(start, end)
       setTag('')
       setWhichEdgeIsActive(-1)
+      setIsEdgeStart(true)
     }
   }, [tag])
 
@@ -32,7 +34,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     return content.split('').map((letter: string, i: number) => {
       const index: number = start + i
       return (
-        <div className={whichEdgeIsActive === index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
+        <div className={whichEdgeIsActive === index ? 'edge active' : (whichEdgeIsHover === index ? 'edge hover' : 'edge')} key={nanoid()} data-index={index}>
           <span className="edge-border" data-index={index} />
           <span className="edge-text" data-index={index} >{letter}</span>
         </div>
@@ -46,7 +48,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     if (useEdge) contentSplits = generateContentWithEdge(content, start, id)
 
     if (mark) return useEdge ?
-      <Mark useEdge={useEdge} whichEdgeIsActive={whichEdgeIsActive} tagStyle={tagStyle} {...props} /> :
+      <Mark useEdge={useEdge} whichEdgeIsActive={whichEdgeIsActive} whichEdgeIsHover={whichEdgeIsHover} tagStyle={tagStyle} {...props} /> :
       <Mark useEdge={useEdge} tagStyle={tagStyle} {...props} />
 
     return (
@@ -142,18 +144,24 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
         start = index
         setWhichEdgeIsActive(index)
         return
-      } else {      // 设置edge终点
-        end = index
+      } else {      // 设置edge终点，加1是因为设置终点是点击的是最后一个字
+        end = index + 1
         window.onclick = (e: any) => {    // 点击选项，关闭菜单
           if (e.target.className === 'click-menu-list' || e.target.className === 'click-menu-list-item') {
             setClickMenuActive(false)
           }
         }
-        setIsEdgeStart(true)
         openMenu(e)
       }
     } else return
 
+  }
+
+  const handleMouseOver = (e: any) => {
+    if (e.target.className === 'edge-text' || e.target.className === 'edge-border') {
+      const index: number = Number(e.target.getAttribute('data-index'))
+      isEdgeStart ? setWhichEdgeIsHover(index) : setWhichEdgeIsHover(index + 1)
+    }
   }
 
   const renderTag = (start: number, end: number) => {
@@ -199,7 +207,8 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
       className='react-nested-annotator'
       style={style}
       onClick={(e: any) => useEdge ? handleEdge(e) : handleMouseUp(e)}
-      onContextMenu={(e: any) => handleMarkRightClick(e)}>
+      onContextMenu={(e: any) => handleMarkRightClick(e)}
+      onMouseOver={(e: any) => useEdge ? handleMouseOver(e) : null}>
       <ClickMenu ref={measuredRef} custom={Object.keys(tags)} clickMenuActive={clickMenuActive} transferOption={transferOption} />
       {
         splits.map((item: any, idx: number) => (

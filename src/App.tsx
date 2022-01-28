@@ -30,7 +30,7 @@ const App = () => {
           setArguments(value);
           return
         }}
-        useEdge={true}
+        // useEdge={true}
         // tagStyle={{
         //   verticalAlign: 'middle',
         //   backgroundColor: 'white',
