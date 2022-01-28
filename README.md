@@ -5,6 +5,8 @@ A React Component for annotating nested text from html.
 
 
 
+
+
 ### basic usage
 
 ```jsx
@@ -39,11 +41,17 @@ const App = () => {
 export default App;
 ```
 
+![image](https://github.com/Bollues/react-nested-annotator/blob/main/img/annotation.gif)
+
+![image](D:\gitproject\react-nested-annotator\README.assets\nested.gif)
+
 
 
 ### how to Delete the label
 
 move mouse over the annotated text, and then **rightclick**
+
+![image](D:\gitproject\react-nested-annotator\README.assets\delete.gif)
 
 
 
@@ -61,6 +69,8 @@ move mouse over the annotated text, and then **rightclick**
 + useEdge={true}
 />
 ```
+
+![image](D:\gitproject\react-nested-annotator\README.assets\useEdge.gif)
 
 
 
@@ -87,11 +97,15 @@ move mouse over the annotated text, and then **rightclick**
 />
 ```
 
+![image](D:\gitproject\react-nested-annotator\README.assets\tagStyle.gif)
+
 
 
 ### codeSandBox
 
 https://codesandbox.io/s/quirky-gauss-p6wfd?file=/src/App.js
+
+
 
 
 
