@@ -30,7 +30,7 @@ export interface MarkProps {
   tag: string
   useEdge?: boolean
   color?: string
-  whichEdgeIsActive?: string
+  whichEdgeIsActive?: number
   tagStyle?: any
   onContextMenu: (any: any) => any
 }

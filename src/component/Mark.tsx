@@ -16,7 +16,7 @@ const renderTag = (tag: any, tagStyle: any) => {
   )
 }
 
-const generateMarkArray = ({id, children, start, content}: NestedMarkProps) => {
+const generateMarkArray = ({id, children, start, content, whichEdgeIsActive}: NestedMarkProps) => {
   let res: any = []
   let tmpStart: number = 0
   let tmpEnd: number = 0
@@ -26,9 +26,10 @@ const generateMarkArray = ({id, children, start, content}: NestedMarkProps) => {
         res.push({
           id,
           start,
-          content: content.slice(tmpStart, item.start - start)
+          content: content.slice(tmpStart, item.start - start),
         })
       }
+      item['whichEdgeIsActive'] = whichEdgeIsActive
       res.push(item)
       tmpStart = item.end - start
       tmpEnd = item.end
@@ -37,7 +38,7 @@ const generateMarkArray = ({id, children, start, content}: NestedMarkProps) => {
       res.push({
         id,
         start: tmpEnd,
-        content: content.slice(tmpStart, content.length)
+        content: content.slice(tmpStart, content.length),
       })
     }
   } else {
@@ -45,7 +46,7 @@ const generateMarkArray = ({id, children, start, content}: NestedMarkProps) => {
       res.push({
         id,
         start,
-        content: content.slice(tmpStart, content.length)
+        content: content.slice(tmpStart, content.length),
       })
     }
   }
@@ -59,7 +60,7 @@ const generateContentWithEdge: any = ({content, id, start}: any, whichEdgeIsActi
         content.split('').map((letter: string, i: number) => {
           const index: number = start + i
           return (
-            <div className={whichEdgeIsActive == index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
+            <div className={whichEdgeIsActive === index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
               <span className="edge-border" data-index={index} data-id={id} />
               <span className="edge-text" data-index={index} data-id={id} >{letter}</span>
             </div>
@@ -79,6 +80,7 @@ const Mark = (props: NestedMarkProps) => {
 
   return (
     <mark
+      className="react-nested-annotator-mark"
       key={id}
       style={{
         display: 'inline-block',

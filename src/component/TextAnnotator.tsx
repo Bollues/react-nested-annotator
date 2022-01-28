@@ -6,16 +6,16 @@ import { selectionIsEmpty, splitWithOffsets, makeSplits, mergeSplits, calcOffset
 import { nanoid } from 'nanoid';
 import './index.css';
 
-let start: number = 0, end: number = 0    // 标注的起始和终止位置
+let start: number = 0, end: number = 0                                // 标注的起始和终止位置
 
 const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
   const { content, value, style, tags } = props
 
-  const [isEdgeStart, setIsEdgeStart] = useState(true)
-  const [clickMenuActive, setClickMenuActive] = useState(false)   // 显示/隐藏 菜单
-  const [tag, setTag] = useState('')    // 选择的tag
-  const [whichEdgeIsActive, setWhichEdgeIsActive] = useState(-1)
-  const measuredRef = useRef<HTMLDivElement>(null);   // 菜单ref，用来设置top & left & height
+  const [isEdgeStart, setIsEdgeStart] = useState(true)                // 是否正在标注edge的start
+  const [clickMenuActive, setClickMenuActive] = useState(false)       // 显示/隐藏 菜单
+  const [tag, setTag] = useState('')                                  // 选择的tag
+  const [whichEdgeIsActive, setWhichEdgeIsActive] = useState(-1)      // 设置edge常亮
+  const measuredRef = useRef<HTMLDivElement>(null);                   // 菜单ref，用来设置top & left & height
 
   const useEdge = props.useEdge ? true : false
   const tagStyle = props.tagStyle ? props.tagStyle : null
@@ -32,7 +32,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     return content.split('').map((letter: string, i: number) => {
       const index: number = start + i
       return (
-        <div className={whichEdgeIsActive == index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
+        <div className={whichEdgeIsActive === index ? 'edge active' : 'edge'} key={nanoid()} data-index={index}>
           <span className="edge-border" data-index={index} />
           <span className="edge-text" data-index={index} >{letter}</span>
         </div>
@@ -45,7 +45,9 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     let contentSplits = null
     if (useEdge) contentSplits = generateContentWithEdge(content, start, id)
 
-    if (mark) return <Mark useEdge={useEdge} tagStyle={tagStyle} {...props} />
+    if (mark) return useEdge ?
+      <Mark useEdge={useEdge} whichEdgeIsActive={whichEdgeIsActive} tagStyle={tagStyle} {...props} /> :
+      <Mark useEdge={useEdge} tagStyle={tagStyle} {...props} />
 
     return (
       useEdge ?
@@ -77,6 +79,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     } as any
   }
 
+  // 设置menu的位置
   const openMenu = (event: any) => {
     setClickMenuActive(true)
     let target = event.target.parentNode
@@ -89,9 +92,9 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     return
   }
 
+  // 选择的tag
   const transferOption = (whichOptionIsClicked: string) => {
     setTag(whichOptionIsClicked)
-
   }
 
   // 划词标注
@@ -167,6 +170,7 @@ const TextAnnotator = <T extends Span>(props: TextAnnotatorProps<T>) => {
     }
   }
 
+  // 右键事件
   const handleMarkRightClick = (e: any) => {
     const tag: string = e.target.nodeName
     const id: string = e.target.getAttribute('data-id')

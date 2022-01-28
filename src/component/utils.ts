@@ -72,7 +72,6 @@ export const splitWithOffsets = (text: string, offsets: { start: number; end: nu
     }
   })
 
-  // console.log('splits', splits)
   return splits
 }
 
@@ -147,7 +146,6 @@ export const makeSplits: any = (
   }
 
   unNestededSplits.push(span)
-  // console.log('unNestededSplits', unNestededSplits);
 
   return unNestededSplits
 }
@@ -159,7 +157,6 @@ export const makeSplits: any = (
  */
 export const splitText: any = (text: string, splits: { id: string; start: number; end: number; mark?: boolean; content?: string; children?: any; tag?: string }[]) => {
   splits = splitWithOffsets(text, splits)
-  // console.log('before', splits)
   const res: any = []
   let lastStart = 0, lastEnd = 0
   splits.forEach((item) => {
@@ -187,7 +184,6 @@ export const splitText: any = (text: string, splits: { id: string; start: number
     lastStart = item.start
     lastEnd = item.end
   })
-  // console.log('after', res)
   return res
 }
 
@@ -198,13 +194,11 @@ export const splitText: any = (text: string, splits: { id: string; start: number
  *    - 删除一个标签时，将 前、后、当前 3个split合并成一个split
  */
 export const mergeSplits: any = (text: string, splits: { id: string; start: number; end: number; mark?: boolean; content?: string; children?: any; tag?: string }[]) => {
-  // console.log('receive splits', splits)
   const res: any = []
   let needSplitAgain = false    // 如果是最外层标签被删了，直接变成一个普通文本，拼接完后再进入makeSplits
   splits.forEach((item) => {
     if (item.start === item.end) return     // 去掉''
     if (item.mark) {    // 是标签直接进（标签不需要合并）
-      // if (item.mark || res.length === 0) {    // 是标签直接进（标签不需要合并）
       res.push(item)
       return
     }
@@ -254,7 +248,6 @@ export const mergeSplits: any = (text: string, splits: { id: string; start: numb
   if (needSplitAgain) {   // 最外层的标签被删了
     return splitText(text, res)
   }
-  // console.log('return res', res)
   return res
 }
 
